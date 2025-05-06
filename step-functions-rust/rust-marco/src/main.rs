@@ -32,6 +32,7 @@ async fn function_handler(event: LambdaEvent<Request>) -> Result<Response, Error
     Ok(resp)
 }
 
+
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     tracing_subscriber::fmt()

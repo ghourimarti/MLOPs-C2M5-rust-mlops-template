@@ -1,12 +1,12 @@
-FROM rust:latest as builder
-ENV APP webdocker
-WORKDIR /usr/src/$APP
+FROM clux/muslrust:stable AS builder
+
+WORKDIR /app
 COPY . .
-RUN cargo install --path .
- 
-FROM debian:buster-slim
-RUN apt-get update && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /usr/local/cargo/bin/$APP /usr/local/bin/$APP
-#export this actix web service to port 8080 and 0.0.0.0
-EXPOSE 8080
-CMD ["webdocker"]
+RUN cargo build --release
+
+FROM scratch
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/webdocker /webdocker
+EXPOSE 9000
+ENTRYPOINT ["/webdocker"]
+
+    
